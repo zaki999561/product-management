@@ -1,5 +1,3 @@
-<!-- resources/views/layouts/app.blade.php -->
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,7 +9,7 @@
 <body>
     <div class="container">
         <header>
-            <h1 style="font-size:1.25rem;">受注管理システム</h1>
+        
         </header>
 
         <main>
