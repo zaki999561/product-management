@@ -11,15 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->text('商品画像');
-            $table->string('商品名');
-            $table->integer('価格');
-            $table->integer('在庫数');
-            $table->string('メーカー名');
+        Schema::table('products', function (Blueprint $table) {
             $table->text('コメント')->nullable();
-            $table->timestamps();
         });
     }
 
@@ -28,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn('コメント');
+        });
     }
 };

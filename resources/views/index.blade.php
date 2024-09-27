@@ -6,7 +6,6 @@
 <div class="row">
     <div class="col-lg-12">
         <h2>商品一覧画面</h2>
-        <a class="btn btn-success" href="{{ route('products.create') }}">新規登録</a>
     </div>
 </div>
 
@@ -18,6 +17,7 @@
         <th>価格</th>
         <th>在庫数</th>
         <th>メーカー名</th>
+        <th><a class="btn btn-warning" href="{{ route('products.create') }}">新規登録</a></th>
     </tr>
     @foreach ($products as $product)
     <tr>
@@ -28,7 +28,12 @@
         <td style="text-align:right">{{ $product->在庫数 }}</td>
         <td style="text-align:right">{{ $product->メーカー名 }}</td>
         <td>
-            
+        <a class="btn btn-primary" href="{{ route('products.show',$product->id) }}">詳細</a>
+        <form action="{{ route('products.destroy',$product->id) }}" method="POST">
+@csrf
+@method('DELETE')
+<button type="submit" class="btn btn-danger" onclick='return confirm("削除しますか？");'>削除</button>
+</form>
         </td>
     </tr>
     @endforeach

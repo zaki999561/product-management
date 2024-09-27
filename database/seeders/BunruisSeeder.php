@@ -16,17 +16,17 @@ class BunruisSeeder extends Seeder
         [
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => null,
-            'str'=> 'コーラ',
+            'str'=> 'Coca-Cola',
         ],
         [
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => null,
-            'str'=> 'お茶',
+            'str'=> 'サントリー',
         ],
         [
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => null,
-            'str'=> '水',
+            'str'=> 'キリン',
         ],
     ]);
     }

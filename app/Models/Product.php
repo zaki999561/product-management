@@ -15,4 +15,8 @@ class Product extends Model
         '価格',
         '商品画像',
     ];
+    public function bunrui()
+    {
+        return $this->belongsTo(Bunrui::class, 'メーカー名');
+    }
 }
