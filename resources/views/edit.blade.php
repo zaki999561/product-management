@@ -58,20 +58,20 @@
 
         <div class="col-12 mb-2 mt-2">
             <div class="form-group">
-            <textarea class="form-control" style="height:100px" name="コメント">{{ $product->コメント }}</textarea>
-</div>
-</div>
-
-
-            
+                <textarea class="form-control" style="height:100px" name="コメント">{{ $product->コメント }}</textarea>
+            </div>
+        </div>
+   
             <div class="col-12 mb-2 mt-2">
-            <div class="form-group">
-            <input type="file" name="商品画像" class="form-control">
-</div>
-</div>
-<div class="col-12 mb-2 mt-2">
+               <div class="form-group">
+                  <input type="file" name="商品画像" class="form-control">
+               </div>
+            </div>
+
+        <div class="col-12 mb-2 mt-2">
             <button type="submit" class="btn btn-warning mt-3">更新</button>
             <a class="btn btn-primary mt-3" href="{{ route('products.show', $product->id) }}">戻る</a>
+        </div>
 </div>
             </form>
 
