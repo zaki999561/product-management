@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\Bunrui;
+use App\Models\Company;
 use Illuminate\Http\Request;
 
 
@@ -10,16 +10,16 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::select([
-        'products.id',
-        'products.商品画像',
-        'products.商品名',
-        'products.価格',
-        'products.在庫数',
-        'bunruis.str as メーカー名',
-
+        $products = Product::with('company')
+        ->select([
+        'id',
+            'img_path',
+            'product_name',
+            'price',
+            'stock',
+            'company_id',
+            'comment'
 ])
-->join('bunruis', 'products.メーカー名', '=', 'bunruis.id')
 ->orderBy('products.id', 'DESC')
 ->paginate(5);
         
@@ -32,33 +32,33 @@ class ProductController extends Controller
     public function create()
     {
         
-        $bunruis = Bunrui::all();
+        $companies = Company::all();
         return view('create')
-        ->with('bunruis',$bunruis);
+        ->with('companies',$companies);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            '商品画像' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            '商品名' => 'required|max:20',
-            'メーカー名' => 'required|string',
-            '価格' => 'required|integer',
-            '在庫数' => 'required|integer',
+            'img_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'product_name' => 'required|max:20',
+            'company_id' => 'required|string',
+            'price' => 'required|integer',
+            'stock' => 'required|integer',
         ]);
 
         $product = new Product;
-        if ($request->hasFile('商品画像')) {
-            $image = $request->file('商品画像');
+        if ($request->hasFile('img_path')) {
+            $image = $request->file('img_path');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images'), $imageName);
-            $product->商品画像 = $imageName;
+            $product->img_path = $imageName;
         }
-        $product->商品名 = $request->input('商品名');
-        $product->メーカー名 = $request->input('メーカー名');
-        $product->価格 = $request->input('価格');
-        $product->在庫数 = $request->input('在庫数');
-        $product->コメント= $request->input('コメント');
+        $product->product_name = $request->input('product_name');
+        $product->company_id = $request->input('company_id');
+        $product->price = $request->input('price');
+        $product->stock = $request->input('stock');
+        $product->comment= $request->input('comment');
         $product->save();
         return redirect()->route('products.create')->with('success', '商品が正常に保存されました');
     }
@@ -66,48 +66,48 @@ class ProductController extends Controller
     public function show(Product $product)
     {
 
-    $bunruis = Bunrui::all();
-    $product = Product::with('bunrui')->findOrFail($product->id);
+    $companies = Company::all();
+    $product = Product::with('Company')->findOrFail($product->id);
     return view('show', compact('product'))
-    ->with('bunruis',$bunruis);
+    ->with('companies',$companies);
 
     }
 
     public function edit(Product $product)
     {
-        $bunruis = Bunrui::all();
+        $companies = Company::all();
     return view('edit', compact('product'))
     ->with('page_id',request()->page_id)
-    ->with('bunruis',$bunruis);
+    ->with('companies',$companies);
     }
 
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            '商品画像' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            '商品名' => 'required|max:20',
-            'メーカー名' => 'required|string',
-            '価格' => 'required|integer',
-            '在庫数' => 'required|integer',
+            'img_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'product_name' => 'required|max:20',
+            'company_id' => 'required|string',
+            'price' => 'required|integer',
+            'stock' => 'required|integer',
         ]);
-        $product->商品名 = $request->input('商品名');
-        $product->メーカー名 = $request->input('メーカー名');
-        $product->価格 = $request->input('価格');
-        $product->在庫数 = $request->input('在庫数');
-        $product->コメント= $request->input('コメント');
+        $product->product_name = $request->input('product_name');
+        $product->company_id = $request->input('company_id');
+        $product->price = $request->input('price');
+        $product->stock = $request->input('stock');
+        $product->comment= $request->input('comment');
 
-        if ($request->hasFile('商品画像')) {
-            if ($product->商品画像) {
-                $oldImagePath = public_path('images/' . $product->商品画像);
+        if ($request->hasFile('img_path')) {
+            if ($product->img_path) {
+                $oldImagePath = public_path('images/' . $product->img_path);
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
                 }
             }
 
-            $image = $request->file('商品画像');
+            $image = $request->file('img_path');
         $imageName = time() . '.' . $image->getClientOriginalExtension();
         $image->move(public_path('images'), $imageName);
-        $product->商品画像 = $imageName;
+        $product->img_path = $imageName;
     }
 
         $product->save();

@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Product;
+use App\Models\Company;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
  */
@@ -17,13 +18,14 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            '商品画像' => $this->faker->imageUrl(),
-          '商品名' => $this->faker->word(),
-            '価格' => $this->faker->numberBetween(100, 10000),
-            '在庫数' => $this->faker->numberBetween(1, 100),
-            'メーカー名' => $this->faker->company(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'img_path' => $this->faker->imageUrl(),
+          'product_name' => $this->faker->word(),
+            'price' => $this->faker->numberBetween(100, 10000),
+            'stock' => $this->faker->numberBetween(1, 100),
+            'company_id' => Company::inRandomOrder()->first()->id,
+            'comment' => $this->faker->realtext(50),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => null,
         ];
     }
 }

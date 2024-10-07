@@ -17,7 +17,7 @@
 <div class="row">
         <div class="col-12 mb-2 mt-2">
             <div class="form-group">
-                <input type="text" name="商品名" value="{{ $product->商品名 }}" class="form-control">
+                <input type="text" name="商品名" value="{{ $product->product_name }}" class="form-control">
                 @error('商品名')
                 <span style="color:red;">必須項目です</span>
                 @enderror
@@ -28,8 +28,8 @@
         <div class="col-12 mb-2 mt-2">
             <div class="form-group">
             <select name="メーカー名" class="form-select" required>
-            @foreach ($bunruis as $bunrui)
-                        <option value="{{ $bunrui->id }}">{{ $bunrui->str }}</option>
+            @foreach ($companies as $company)
+                        <option value="{{ $company->id }}">{{ $company->company_name }}</option>
             @endforeach
             </select>
             @error('メーカー名')
@@ -40,7 +40,7 @@
 
         <div class="col-12 mb-2 mt-2">
             <div class="form-group">
-                <input type="text" name="価格" value="{{ $product->価格 }}" class="form-control">
+                <input type="text" name="価格" value="{{ $product->price }}" class="form-control">
                 @error('価格')
                 <span style="color:red;">必須項目です</span>
                 @enderror
@@ -49,7 +49,7 @@
 
         <div class="col-12 mb-2 mt-2">
             <div class="form-group">
-                <input type="text" name="在庫数" value="{{ $product->在庫数 }}" class="form-control">
+                <input type="text" name="在庫数" value="{{ $product->stock }}" class="form-control">
                 @error('在庫数')
                 <span style="color:red;">必須項目です</span>
                 @enderror
@@ -58,7 +58,7 @@
 
         <div class="col-12 mb-2 mt-2">
             <div class="form-group">
-                <textarea class="form-control" style="height:100px" name="コメント">{{ $product->コメント }}</textarea>
+                <textarea class="form-control" style="height:100px" name="コメント">{{ $product->comment }}</textarea>
             </div>
         </div>
    

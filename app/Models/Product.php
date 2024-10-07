@@ -9,14 +9,15 @@ class Product extends Model
 {
     use HasFactory;
     protected $fillable = [
-        '商品名',
-        'メーカー名',
-        '在庫数',
-        '価格',
-        '商品画像',
+        'product_name',
+        'company_id',
+        'stock',
+        'price',
+        'comment',
+        'img_path',
     ];
-    public function bunrui()
+    public function Company()
     {
-        return $this->belongsTo(Bunrui::class, 'メーカー名');
+        return $this->belongsTo(Company::class, 'company_id');
     }
 }

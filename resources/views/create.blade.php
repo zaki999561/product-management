@@ -28,8 +28,8 @@
         <div class="col-12 mb-2 mt-2">
             <div class="form-group">
             <select name="メーカー名" class="form-select" required>
-            @foreach ($bunruis as $bunrui)
-                        <option value="{{ $bunrui->id }}">{{ $bunrui->str }}</option>
+            @foreach ($companies as $company)
+                        <option value="{{ $company->id }}">{{ $company->company_name }}</option>
             @endforeach
             </select>
             @error('メーカー名')

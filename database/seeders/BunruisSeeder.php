@@ -12,21 +12,27 @@ class BunruisSeeder extends Seeder
      */
     public function run(): void
     {
-    \DB::table('bunruis')->insert([
+    \DB::table('companies')->insert([
         [
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => null,
-            'str'=> 'Coca-Cola',
+            'company_name'=> 'Coca-Cola',
+            'street_address' => '123 Coca-Cola St., Atlanta, GA',
+            'representative_name' => 'James Quincey',
         ],
         [
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => null,
-            'str'=> 'サントリー',
+            'company_name'=> 'サントリー',
+            'street_address' => '東京都港区台場2-3-3',
+             'representative_name' => '新浪 剛史',
         ],
         [
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => null,
-            'str'=> 'キリン',
+            'company_name'=> 'キリン',
+            'street_address' => '東京都中野区中野4-10-2',
+            'representative_name' => '磯崎功典',
         ],
     ]);
     }

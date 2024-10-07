@@ -22,11 +22,11 @@
     @foreach ($products as $product)
     <tr>
         <td>{{ $product->id }}</td>
-        <td>{{ $product->商品画像 }}</td>
-        <td>{{ $product->商品名 }}</td>
-        <td style="text-align:right">{{ $product->価格 }}円</td>
-        <td style="text-align:right">{{ $product->在庫数 }}</td>
-        <td style="text-align:right">{{ $product->メーカー名 }}</td>
+        <td>{{ $product->img_path }}</td>
+        <td>{{ $product->product_name }}</td>
+        <td style="text-align:right">{{ $product->price }}円</td>
+        <td style="text-align:right">{{ $product->stock }}</td>
+        <td style="text-align:right">{{ $product->company->company_name }}</td>
         <td>
         <a class="btn btn-primary" href="{{ route('products.show',$product->id) }}">詳細</a>
         <form action="{{ route('products.destroy',$product->id) }}" method="POST">
