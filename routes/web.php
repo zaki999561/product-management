@@ -18,10 +18,10 @@ Route::get('/products/show/{product}', 'App\Http\Controllers\ProductController@s
 
 Route::get('/products/edit/{product}', 'App\Http\Controllers\ProductController@edit')->name('products.edit');
 Route::put('/products/edit/{product}', 'App\Http\Controllers\ProductController@update')->name('products.update');
-Auth::routes();
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::delete('/products/{product}', 'App\Http\Controllers\ProductController@destroy')->name('products.destroy');
 
-
+Auth::routes();
