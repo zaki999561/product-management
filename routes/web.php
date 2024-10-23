@@ -8,20 +8,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/products','App\Http\Controllers\ProductController@index')->name('products.index');
+// 商品関連のルート
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/store', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/show/{product}', [ProductController::class, 'show'])->name('products.show');
+    Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/edit/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+});
 
-
-Route::get('/products/create', 'App\Http\Controllers\ProductController@create')->name('products.create');
-Route::post('/products/store', 'App\Http\Controllers\ProductController@store')->name('products.store');
-
-Route::get('/products/show/{product}', 'App\Http\Controllers\ProductController@show')->name('products.show');
-
-Route::get('/products/edit/{product}', 'App\Http\Controllers\ProductController@edit')->name('products.edit');
-Route::put('/products/edit/{product}', 'App\Http\Controllers\ProductController@update')->name('products.update');
-
-
+// ホーム関連のルート
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::delete('/products/{product}', 'App\Http\Controllers\ProductController@destroy')->name('products.destroy');
-
+// 認証ルート
 Auth::routes();

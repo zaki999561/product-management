@@ -3,81 +3,91 @@
 @section('title', '商品新規登録画面')
 
 @section('content')
-<div class="row">
-    <div class="col-lg-12">
-        <h2>商品新規登録画面</h2>
-     
+<div class="row mb-4">
+    <div class="col-lg-12 text-center">
+        <h2 class="mt-4">商品新規登録画面</h2>
     </div>
 </div>
 
-<form action="{{ route('products.store') }}" method="POST"enctype="multipart/form-data">
+<form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
 
-@csrf
-
-<div class="row">
-        <div class="col-12 mb-2 mt-2">
+    <div class="row mb-3">
+        <div class="col-md-6 offset-md-3">
             <div class="form-group">
-                <input type="text" name="商品名" class="form-control"placeholder="商品名">
-                @error('商品名')
-                <span style="color:red;">必須項目です</span>
+                <label for="product_name" class="form-label">商品名<span class="text-danger">*</span></label>
+                <input type="text" name="product_name" class="form-control @error('product_name') is-invalid @enderror" placeholder="商品名" value="{{ old('商品名') }}">
+                @error('product_name')
+                <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
         </div>
-        
-       
-        <div class="col-12 mb-2 mt-2">
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6 offset-md-3">
             <div class="form-group">
-            <select name="メーカー名" class="form-select" required>
-            @foreach ($companies as $company)
+                <label for="company_id" class="form-label">メーカー名<span class="text-danger">*</span></label>
+                <select name="company_id" class="form-select @error('company_id') is-invalid @enderror" required>
+                    <option value="" disabled selected>メーカーを選択</option>
+                    @foreach ($companies as $company)
                         <option value="{{ $company->id }}">{{ $company->company_name }}</option>
-            @endforeach
-            </select>
-            @error('メーカー名')
-            <span style="color:red;">必須項目です</span>
-            @enderror
-            </div>
-        </div>
-
-        <div class="col-12 mb-2 mt-2">
-            <div class="form-group">
-                <input type="text" name="価格" class="form-control" placeholder="価格">
-                @error('価格')
-                <span style="color:red;">必須項目です</span>
+                    @endforeach
+                </select>
+                @error('company_id')
+                <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
         </div>
+    </div>
 
-        <div class="col-12 mb-2 mt-2">
+    <div class="row mb-3">
+        <div class="col-md-6 offset-md-3">
             <div class="form-group">
-                <input type="text" name="在庫数" class="form-control" placeholder="在庫数">
-                @error('在庫数')
-                <span style="color:red;">必須項目です</span>
+                <label for="price" class="form-label">価格<span class="text-danger">*</span></label>
+                <input type="text" name="price" class="form-control @error('price') is-invalid @enderror" placeholder="価格" value="{{ old('価格') }}">
+                @error('price')
+                <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
         </div>
+    </div>
 
-        <div class="col-12 mb-2 mt-2">
+    <div class="row mb-3">
+        <div class="col-md-6 offset-md-3">
             <div class="form-group">
-            <textarea class="form-control" style="height:100px" name="コメント" placeholder="コメント"></textarea>
-</div>
-</div>
+                <label for="在庫数" class="form-label">在庫数<span class="text-danger">*</span></label>
+                <input type="text" name="stock" class="form-control @error('stock') is-invalid @enderror" placeholder="在庫数" value="{{ old('在庫数') }}">
+                @error('stock')
+                <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+    </div>
 
-
-            
-            <div class="col-12 mb-2 mt-2">
+    <div class="row mb-3">
+        <div class="col-md-6 offset-md-3">
             <div class="form-group">
-            <input type="file" name="商品画像" class="form-control">
-</div>
-</div>
-<div class="col-12 mb-2 mt-2">
+                <label for="comment" class="form-label">コメント</label>
+                <textarea class="form-control" style="height: 100px" name="comment" placeholder="コメント">{{ old('コメント') }}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6 offset-md-3">
+            <div class="form-group">
+                <label for="img_path" class="form-label">商品画像</label>
+                <input type="file" name="img_path" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6 offset-md-3 text-center">
             <button type="submit" class="btn btn-warning">新規登録</button>
-            </form>
             <a class="btn btn-primary" href="{{ route('products.index') }}">戻る</a>
-</div>
-
-            
-
-
-
-
+        </div>
+    </div>
+</form>
 @endsection
