@@ -16,24 +16,35 @@ class ProductController extends Controller
     }
 
     // 商品一覧を表示
-    public function index()
-    {
-        $products = Product::with('company')
-            ->select([
-                'id',
-                'img_path',
-                'product_name',
-                'price',
-                'stock',
-                'company_id',
-                'comment',
-            ])
-            ->orderBy('products.id', 'DESC')
-            ->paginate(5);
+    public function index(Request $request)
+{
+    // 検索条件を取得
+    $keyword = $request->input('keyword');
+    $companyId = $request->input('company_id');
 
-        return view('index', compact('products'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+    // クエリビルダーで検索
+    $query = Product::query();
+    if (!empty($keyword)) {
+        $query->where('product_name', 'like', '%' . $keyword . '%');
     }
+    if (!empty($companyId)) {
+        $query->where('company_id', $companyId);
+    }
+
+    // 商品データを取得
+    $products = $query->with('company')->paginate(10);
+
+    // メーカー一覧を取得
+    $companies = Company::all(); // すべてのメーカー情報
+
+    // ビューにデータを渡す
+    return view('index', compact('products','companies'))
+            ->with('i', (request()->input('page', 1) - 1) * 5);
+}
+
+    
+
+
 
     // 商品作成画面を表示
     public function create()
@@ -85,10 +96,16 @@ class ProductController extends Controller
     }
 
     // 商品を更新
-    public function update(ProductRequest $request, Product $product)
+    public function update(ProductRequest $request, $id)
     {
+        try {
+            $product = Product::findOrFail($id); // 存在しない場合、例外がスロー
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('products.index')->with('error', '商品が見つかりませんでした。');
+        }
         // 商品の属性を更新
         $product->product_name = $request->input('product_name');
+        
         $product->company_id = $request->input('company_id');
         $product->price = $request->input('price');
         $product->stock = $request->input('stock');
@@ -121,4 +138,5 @@ class ProductController extends Controller
         return redirect()->route('products.index')
             ->with('success', '商品を ' . $product->product_name . ' を削除しました');
     }
+    
 }
