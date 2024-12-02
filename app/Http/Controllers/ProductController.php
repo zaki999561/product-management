@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Company;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -55,7 +56,10 @@ class ProductController extends Controller
 
     // 商品を保存
     public function store(ProductRequest $request)
-    {
+{
+    DB::beginTransaction(); // トランザクション開始
+
+    try {
         $product = new Product;
 
         // 画像ファイルの処理
@@ -75,8 +79,16 @@ class ProductController extends Controller
 
         // 商品を保存
         $product->save();
+
+        DB::commit(); // コミット
         return redirect()->route('products.create')->with('success', '商品が正常に保存されました');
+    } catch (\Exception $e) {
+        DB::rollBack(); // ロールバック
+
+        // エラーメッセージをユーザーに返す
+        return redirect()->route('products.create')->with('error', '商品の保存中にエラーが発生しました: ' . $e->getMessage());
     }
+}
 
     // 商品の詳細を表示
     public function show(Product $product)
@@ -97,15 +109,15 @@ class ProductController extends Controller
 
     // 商品を更新
     public function update(ProductRequest $request, $id)
-    {
-        try {
-            $product = Product::findOrFail($id); // 存在しない場合、例外がスロー
-        } catch (ModelNotFoundException $e) {
-            return redirect()->route('products.index')->with('error', '商品が見つかりませんでした。');
-        }
+{
+    DB::beginTransaction(); // トランザクション開始
+
+    try {
+        // 商品を取得
+        $product = Product::findOrFail($id);
+
         // 商品の属性を更新
         $product->product_name = $request->input('product_name');
-        
         $product->company_id = $request->input('company_id');
         $product->price = $request->input('price');
         $product->stock = $request->input('stock');
@@ -128,15 +140,45 @@ class ProductController extends Controller
 
         // 更新を保存
         $product->save();
-        return redirect()->route('products.edit', $product->id)->with('success', '商品が正常に保存されました');
+
+        DB::commit(); // コミット
+
+        return redirect()->route('products.edit', $product->id)
+            ->with('success', '商品が正常に更新されました');
+    } catch (ModelNotFoundException $e) {
+        DB::rollBack(); // ロールバック
+        return redirect()->route('products.index')
+            ->with('error', '商品が見つかりませんでした。');
+    } catch (\Exception $e) {
+        DB::rollBack(); // ロールバック
+        return redirect()->route('products.edit', $id)
+            ->with('error', '商品の更新中にエラーが発生しました: ' . $e->getMessage());
     }
+}
 
     // 商品を削除
     public function destroy(Product $product)
-    {
+{
+    DB::beginTransaction(); // トランザクションを開始
+
+    try {
+        $productName = $product->product_name;
+
+        // 商品の削除処理
         $product->delete();
+
+        DB::commit(); // コミット
+
+        // 成功時のリダイレクト
         return redirect()->route('products.index')
-            ->with('success', '商品を ' . $product->product_name . ' を削除しました');
+            ->with('success', '商品「' . $productName . '」を削除しました');
+    } catch (\Exception $e) {
+        DB::rollBack(); // ロールバック
+
+        // エラーハンドリング
+        return redirect()->route('products.index')
+            ->with('error', '商品の削除中にエラーが発生しました: ' . $e->getMessage());
     }
+}
     
 }
