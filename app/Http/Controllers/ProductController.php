@@ -71,11 +71,7 @@ class ProductController extends Controller
         }
 
         // 商品の属性を設定
-        $product->product_name = $request->input('product_name');
-        $product->company_id = $request->input('company_id');
-        $product->price = $request->input('price');
-        $product->stock = $request->input('stock');
-        $product->comment = $request->input('comment');
+        $product->fill($request->all());
 
         // 商品を保存
         $product->save();
@@ -116,30 +112,27 @@ class ProductController extends Controller
         // 商品を取得
         $product = Product::findOrFail($id);
 
-        // 商品の属性を更新
-        $product->product_name = $request->input('product_name');
-        $product->company_id = $request->input('company_id');
-        $product->price = $request->input('price');
-        $product->stock = $request->input('stock');
-        $product->comment = $request->input('comment');
-
         // 画像ファイルの更新処理
         if ($request->hasFile('img_path')) {
+            // 既存画像の削除
             if ($product->img_path) {
                 $oldImagePath = public_path('images/' . $product->img_path);
                 if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath); // 古い画像ファイルを削除
+                    unlink($oldImagePath);
                 }
             }
 
+            // 新しい画像をアップロード
             $image = $request->file('img_path');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images'), $imageName);
-            $product->img_path = $imageName; // 新しい画像ファイル名を設定
+
+            // 画像パスをリクエストデータに追加
+            $request->merge(['img_path' => $imageName]);
         }
 
-        // 更新を保存
-        $product->save();
+        // fillメソッドで一括更新
+        $product->fill($request->all())->save();
 
         DB::commit(); // コミット
 
@@ -155,6 +148,7 @@ class ProductController extends Controller
             ->with('error', '商品の更新中にエラーが発生しました: ' . $e->getMessage());
     }
 }
+
 
     // 商品を削除
     public function destroy(Product $product)
