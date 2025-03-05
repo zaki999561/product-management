@@ -21,20 +21,17 @@
         <th width="280px">操作</th>
     </tr>
     @foreach ($products as $product)
-    <tr>
+    <tr data-id="{{ $product->id }}">
         <td>{{ $product->id }}</td>
+        <td><img src="{{ asset('images/' . $product->img_path) }}" alt="{{ $product->name }}" width="100" height="auto"></td>
         <td>{{ $product->name }}</td>
         <td>{{ $product->price }}</td>
         <td>{{ $product->stock }}</td>
         <td>{{ $product->manufacturer }}</td>
         <td>
-            <form action="{{ route('products.destroy',$product->id) }}" method="POST">
-                <a class="btn btn-info" href="{{ route('products.show',$product->id) }}">表示</a>
-                <a class="btn btn-primary" href="{{ route('products.edit',$product->id) }}">編集</a>
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger">削除</button>
-            </form>
+            <a class="btn btn-info" href="{{ route('products.show',$product->id) }}">表示</a>
+            <a class="btn btn-primary" href="{{ route('products.edit',$product->id) }}">編集</a>
+            <button type="button" class="btn btn-danger delete-button" data-id="{{ $product->id }}">削除</button>
         </td>
     </tr>
     @endforeach

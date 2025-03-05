@@ -16,7 +16,7 @@
         @endif
         
 <!-- 検索フォーム -->
-<form action="{{ route('products.index') }}" method="GET" class="mb-4">
+<form id="search-form" action="{{ route('products.index') }}" method="GET" class="mb-4">
     <div class="row g-2 align-items-center">
         <!-- 商品名検索 -->
         <div class="col-md-4">
@@ -65,10 +65,12 @@
                 <a class="btn btn-warning" href="{{ route('products.create') }}">新規登録</a>
             </th>
         </tr>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
     </thead>
-    <tbody>
+    <tbody id="product-list">
         @forelse ($products as $product)
-            <tr>
+            <tr data-id="{{ $product->id }}">
                 <td>{{ $product->id }}</td>
                 <td>
                     <img src="{{ asset('images/' . $product->img_path) }}" alt="{{ $product->product_name }}" style="width: 100px; height: auto;">
@@ -79,18 +81,21 @@
                 <td>{{ $product->company->company_name }}</td>
                 <td>
                     <a class="btn btn-primary" href="{{ route('products.show', $product->id) }}">詳細</a>
-                    <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline;">
+                    <form class="delete-form" action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger" onclick='return confirm("削除しますか？");'>削除</button>
+                        <button type="button" class="btn btn-danger delete-button" data-id="{{ $product->id }}">削除</button>
                     </form>
                 </td>
             </tr>
         @empty
-            <tr>
+            <tr>    
                 <td colspan="7" class="text-center">該当する商品が見つかりませんでした。</td>
             </tr>
         @endforelse
+        
+       
+
     </tbody>
 </table>
 

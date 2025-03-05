@@ -151,28 +151,20 @@ class ProductController extends Controller
 
 
     // 商品を削除
-    public function destroy(Product $product)
+    public function destroy($id)
 {
-    DB::beginTransaction(); // トランザクションを開始
-
     try {
+        $product = Product::findOrFail($id);
         $productName = $product->product_name;
-
-        // 商品の削除処理
         $product->delete();
 
-        DB::commit(); // コミット
-
-        // 成功時のリダイレクト
-        return redirect()->route('products.index')
-            ->with('success', '商品「' . $productName . '」を削除しました');
+        return response()->json(['success' => true, 'message' => "商品「{$productName}」が削除されました"]);
     } catch (\Exception $e) {
-        DB::rollBack(); // ロールバック
-
-        // エラーハンドリング
-        return redirect()->route('products.index')
-            ->with('error', '商品の削除中にエラーが発生しました: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => '削除中にエラーが発生しました']);
     }
 }
+
+
+
     
 }

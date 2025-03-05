@@ -17,8 +17,7 @@ Route::prefix('products')->group(function () {
     Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/edit/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-    Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/search', [ProductController::class, 'search'])->name('products.search');
 });
 
 // ホーム関連のルート
