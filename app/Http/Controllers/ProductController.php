@@ -149,6 +149,52 @@ class ProductController extends Controller
     }
 }
 
+//検索処理
+public function search(Request $request)
+{
+    $query = Product::query();
+
+    // 商品名検索
+    if ($request->keyword) {
+        $query->where('product_name', 'like', '%' . $request->keyword . '%');
+    }
+
+    // メーカー検索
+    if ($request->company_id) {
+        $query->where('company_id', $request->company_id);
+    }
+
+    // 価格の範囲検索
+    if ($request->price_min !== null) {
+        $query->where('price', '>=', $request->price_min);
+    }
+
+    if ($request->price_max !== null) {
+        $query->where('price', '<=', $request->price_max);
+    }
+
+    // 在庫数の範囲検索
+    if ($request->stock_min !== null) {
+        $query->where('stock', '>=', $request->stock_min);
+    }
+
+    if ($request->stock_max !== null) {
+        $query->where('stock', '<=', $request->stock_max);
+    }
+
+    // 検索結果の取得
+    $products = $query->with('company')->paginate(5);
+
+    return response()->json([
+        'success' => true,
+        'html' => view('products.partials.product-list', compact('products'))->render(),
+        'pagination' => $products->links('pagination::bootstrap-5')->toHtml()
+    ]);
+}
+
+
+
+
 
     // 商品を削除
     public function destroy($id)

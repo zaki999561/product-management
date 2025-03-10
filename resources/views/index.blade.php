@@ -10,28 +10,29 @@
 </div>
 
 @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
         
 <!-- 検索フォーム -->
-<form id="search-form" action="{{ route('products.index') }}" method="GET" class="mb-4">
+<form id="search-form" class="mb-4">
+    @csrf
     <div class="row g-2 align-items-center">
         <!-- 商品名検索 -->
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <input 
                     type="text" 
                     name="keyword" 
-                    placeholder="検索キーワード" 
+                    placeholder="商品名" 
                     class="form-control" 
                     value="{{ request('keyword') }}">
             </div>
         </div>
 
         <!-- メーカーセレクト -->
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <select name="company_id" class="form-select">
                     <option value="">メーカー名</option>
@@ -44,15 +45,63 @@
             </div>
         </div>
 
+        <!-- 価格下限 -->
+        <div class="col-md-2">
+            <div class="form-group">
+                <input 
+                    type="number" 
+                    name="price_min" 
+                    placeholder="価格（下限）" 
+                    class="form-control" 
+                    value="{{ request('price_min') }}">
+            </div>
+        </div>
+
+        <!-- 価格上限 -->
+        <div class="col-md-2">
+            <div class="form-group">
+                <input 
+                    type="number" 
+                    name="price_max" 
+                    placeholder="価格（上限）" 
+                    class="form-control" 
+                    value="{{ request('price_max') }}">
+            </div>
+        </div>
+
+        <!-- 在庫数下限 -->
+        <div class="col-md-2">
+            <div class="form-group">
+                <input 
+                    type="number" 
+                    name="stock_min" 
+                    placeholder="在庫数（下限）" 
+                    class="form-control" 
+                    value="{{ request('stock_min') }}">
+            </div>
+        </div>
+
+        <!-- 在庫数上限 -->
+        <div class="col-md-2">
+            <div class="form-group">
+                <input 
+                    type="number" 
+                    name="stock_max" 
+                    placeholder="在庫数（上限）" 
+                    class="form-control" 
+                    value="{{ request('stock_max') }}">
+            </div>
+        </div>
+
         <!-- 検索ボタン -->
         <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">検索</button>
+            <button type="submit" id="search-btn" class="btn btn-primary">検索</button>
         </div>
     </div>
 </form>
 
 <!-- 商品一覧テーブル -->
-<table class="table table-bordered">
+<table class="table table-bordered" id="fav-table">
     <thead>
         <tr>
             <th>ID</th>
@@ -66,36 +115,9 @@
             </th>
         </tr>
         <meta name="csrf-token" content="{{ csrf_token() }}">
-
     </thead>
     <tbody id="product-list">
-        @forelse ($products as $product)
-            <tr data-id="{{ $product->id }}">
-                <td>{{ $product->id }}</td>
-                <td>
-                    <img src="{{ asset('images/' . $product->img_path) }}" alt="{{ $product->product_name }}" style="width: 100px; height: auto;">
-                </td>
-                <td>{{ $product->product_name }}</td>
-                <td style="text-align:right">{{ $product->price }}円</td>
-                <td style="text-align:right">{{ $product->stock }}</td>
-                <td>{{ $product->company->company_name }}</td>
-                <td>
-                    <a class="btn btn-primary" href="{{ route('products.show', $product->id) }}">詳細</a>
-                    <form class="delete-form" action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" class="btn btn-danger delete-button" data-id="{{ $product->id }}">削除</button>
-                    </form>
-                </td>
-            </tr>
-        @empty
-            <tr>    
-                <td colspan="7" class="text-center">該当する商品が見つかりませんでした。</td>
-            </tr>
-        @endforelse
-        
-       
-
+        @include('products.partials.product-list', ['products' => $products])
     </tbody>
 </table>
 
