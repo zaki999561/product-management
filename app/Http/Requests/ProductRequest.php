@@ -40,4 +40,6 @@ class ProductRequest extends FormRequest
             'stock.min' => '在庫数は負の数値ではなく、整数で入力してください',
         ];
     }
+
+    
 }

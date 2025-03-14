@@ -20,6 +20,7 @@ Route::prefix('products')->group(function () {
     Route::get('/search', [ProductController::class, 'search'])->name('products.search');
 });
 
+
 // ホーム関連のルート
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
