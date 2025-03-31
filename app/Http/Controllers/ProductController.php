@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -152,45 +153,44 @@ class ProductController extends Controller
 //検索処理
 public function search(Request $request)
 {
-    $query = Product::query();
-
-    // 商品名検索
+    $query = Product::query()->with('company');
+Log::info($request->price_min);
+    // 検索条件の適用
     if ($request->keyword) {
         $query->where('product_name', 'like', '%' . $request->keyword . '%');
     }
-
-    // メーカー検索
     if ($request->company_id) {
         $query->where('company_id', $request->company_id);
     }
-
-    // 価格の範囲検索
-    if ($request->price_min !== null) {
+    if ($request->price_min !== null && is_numeric($request->price_min)) {
+        Log::info('a');
         $query->where('price', '>=', $request->price_min);
     }
-
-    if ($request->price_max !== null) {
+    if ($request->price_max !== null && is_numeric($request->price_max)) {
         $query->where('price', '<=', $request->price_max);
     }
-
-    // 在庫数の範囲検索
-    if ($request->stock_min !== null) {
+    if ($request->stock_min !== null && is_numeric($request->stock_min)) {
         $query->where('stock', '>=', $request->stock_min);
     }
-
-    if ($request->stock_max !== null) {
+    if ($request->stock_max !== null && is_numeric($request->stock_max)) {
         $query->where('stock', '<=', $request->stock_max);
     }
 
-    // 検索結果の取得
-    $products = $query->with('company')->paginate(5);
+    // ソート処理（デフォルトは ID 昇順）
+    //$sortColumn = $request->sort_column ?? 'id';
+    //$sortOrder = $request->sort_order ?? 'asc';
+    //$query->orderBy($sortColumn, $sortOrder);
 
-    return response()->json([
-        'success' => true,
-        'html' => view('products.partials.product-list', compact('products'))->render(),
-        'pagination' => $products->links('pagination::bootstrap-5')->toHtml()
-    ]);
-}
+    // ページネーション
+    $products = $query->get();
+    //$products = $query->paginate(5);
+    //$products = $query->paginate(5)->appends($request->query());
+    Log::info($products);
+
+     return view('products.partials.product-list', compact('products'))->render();
+    }
+
+
 
 
 
