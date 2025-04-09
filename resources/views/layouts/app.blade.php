@@ -22,14 +22,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.0/js/jquery.tablesorter.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.0/css/theme.default.min.css">
 <script>
-$(document).ready(function() 
-{
-    $('#fav-table').tablesorter({
-        headers: {
-            6: { sorter: false }
-        }
-    });
-});
+
 </script> 
 </head>
 <body>

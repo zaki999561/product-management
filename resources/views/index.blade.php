@@ -120,6 +120,14 @@
         @include('products.partials.product-list', ['products' => $products])
     </tbody>
 </table>
+<script>
+    $('#fav-table').tablesorter({
+        headers: {
+            6: { sorter: false }
+        }
+    });
+</script>
+
 
 <!-- ページネーション -->
 <div class="d-flex justify-content-center">

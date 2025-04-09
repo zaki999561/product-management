@@ -154,7 +154,16 @@ class ProductController extends Controller
 public function search(Request $request)
 {
     $query = Product::query()->with('company');
-Log::info($request->price_min);
+
+    // min/max の入力が矛盾している場合は、空の結果を返す
+    if (
+        (is_numeric($request->price_min) && is_numeric($request->price_max) && $request->price_min > $request->price_max) ||
+        (is_numeric($request->stock_min) && is_numeric($request->stock_max) && $request->stock_min > $request->stock_max)
+    ) {
+        $products = collect();
+        return view('products.partials.product-list', compact('products'))->render();
+    }
+
     // 検索条件の適用
     if ($request->keyword) {
         $query->where('product_name', 'like', '%' . $request->keyword . '%');
@@ -162,33 +171,25 @@ Log::info($request->price_min);
     if ($request->company_id) {
         $query->where('company_id', $request->company_id);
     }
-    if ($request->price_min !== null && is_numeric($request->price_min)) {
-        Log::info('a');
+    if (is_numeric($request->price_min)) {
         $query->where('price', '>=', $request->price_min);
     }
-    if ($request->price_max !== null && is_numeric($request->price_max)) {
+    if (is_numeric($request->price_max)) {
         $query->where('price', '<=', $request->price_max);
     }
-    if ($request->stock_min !== null && is_numeric($request->stock_min)) {
+    if (is_numeric($request->stock_min)) {
         $query->where('stock', '>=', $request->stock_min);
     }
-    if ($request->stock_max !== null && is_numeric($request->stock_max)) {
+    if (is_numeric($request->stock_max)) {
         $query->where('stock', '<=', $request->stock_max);
     }
 
-    // ソート処理（デフォルトは ID 昇順）
-    //$sortColumn = $request->sort_column ?? 'id';
-    //$sortOrder = $request->sort_order ?? 'asc';
-    //$query->orderBy($sortColumn, $sortOrder);
-
-    // ページネーション
+    // データ取得
     $products = $query->get();
-    //$products = $query->paginate(5);
-    //$products = $query->paginate(5)->appends($request->query());
-    Log::info($products);
 
-     return view('products.partials.product-list', compact('products'))->render();
-    }
+    return view('products.partials.product-list', compact('products'))->render();
+}
+
 
 
 
